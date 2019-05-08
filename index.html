@@ -6,6 +6,23 @@
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
+        <h1>Rock-Paper-Scissors game</h1>
+        <div id='game-status'>
+            <div id='round-number'>Round: <span>1</span></div>
+            <div class='score'>Computer: <span id='computer-score'>0</span></div>
+            <div class='score'>Player: <span id='player-score'>0</span></div>
+        </div>
+        <div id='controls'>
+            <button class='play-button'>Rock</button>
+            <button class='play-button'>Paper</button>
+            <button class='play-button'>Scissors</button>
+        </div>
+        <div id='round-summary'>
+            <div id='player-choice'>&nbsp;</div>
+            <div id='computer-choice'>&nbsp;</div>
+        </div>    
+        <div id='round-result' class=''>Game not started yet</div>
+        
         <script src="script/game.js" type="text/javascript"></script>
     </body>
 </html>

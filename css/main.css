@@ -1,0 +1,59 @@
+body {
+    text-align: center;
+}
+
+h1 {
+    color: rgb(238, 250, 226);
+    background-color: rgb(67, 60, 70);
+    padding: 20px 0;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+div#round-number {
+    margin: 10px 0;
+}
+
+div#round-number span, div.score span {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+div.score {
+    display: inline;
+    margin: 0 10px;
+    background-color: rgb(197, 197, 211);
+    
+}
+
+#controls button {
+    width: 100px;
+    height: 40px;
+    margin: 30px 10px;
+    border: 1px solid rgb(204, 191, 209);
+    background-color: rgba(0,0,0,0.1);
+    outline: none;
+}
+
+#controls button:hover {
+    box-shadow: 0 0 5px 2px rgb(204, 191, 209);
+}
+
+div#round-summary, div#round-result {
+    border: 1px solid black;
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div#round-result {
+    border-top: none;
+}
+
+div.round-lost {
+    background-color: rgb(244, 163, 105);
+}
+
+div.round-won {
+    background-color: rgb(66, 244, 149)
+}
