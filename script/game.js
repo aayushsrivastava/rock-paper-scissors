@@ -8,8 +8,19 @@ const SELECTION  = {
 
 function computerPlay() {
     let play = Math.floor(Math.random()*3);
-    console.log(play);
-    return play;
+    switch (play) {
+        case 0: 
+        return "Rock";
+        break;
+
+        case 1:
+        return "Paper";
+        break;
+
+        case 2:
+        return "Scissors";
+        break;
+    }
 }
 
 function playRound(playerSelection, computerSelection) {
@@ -63,41 +74,109 @@ function playRound(playerSelection, computerSelection) {
     return status;
 }
 
-function formatInput(input) {
-    input = input.trim();
-    input = input.toUpperCase();
-    return input;
+let playerScore = 0;
+let computerScore = 0;
+let roundCount = 1;
+function updateGameResults(result) {
+    roundCount++;
+    updateRoundNumber();
+
+    if (result === "Draw!") return;
+    else if (result.substring(4, 7) == "Win") playerScore++;
+    else computerScore++;
+
+    updatePlayerScores();
 }
 
-function game() {
-    let playerScore = 0;
-    let computerScore = 0;
-    let roundCount = 1;
+function updateRoundNumber() {
+    let domRoundNumber = document.querySelector('#round-number > span');
+    domRoundNumber.innerText = roundCount;
+}
 
-    while (playerScore < 5 && computerScore < 5) {
-        console.log("Round: " + roundCount++ + " | Scores | Player: " + playerScore + ", Computer: " + computerScore);
+function updatePlayerScores() {
+    let domComputerScore = document.querySelector('#computer-score');
+    let domPlayerScore = document.querySelector('#player-score');
+    domComputerScore.innerText = computerScore;
+    domPlayerScore.innerText = playerScore;
+}
 
-        let playerSelection = prompt("What do you chose?");
-        if (playerSelection === undefined || playerSelection == null) {
-            console.log("exit");
-            return;
-        }
-        playerSelection = formatInput(playerSelection);
+function updateRoundResult(playerSelection, computerSelection, result) {
+    let playerChoice = document.querySelector('#player-choice');
+    let computerChoice = document.querySelector('#computer-choice');
+    let roundResult = document.querySelector('#round-result');
 
-        if (playerSelection != 'ROCK' && playerSelection != "PAPER" && playerSelection != "SCISSORS") {
-            alert("Wrong input!");
-            continue;
-        }
+    playerChoice.innerText = playerSelection;
+    computerChoice.innerText = computerSelection; 
+    roundResult.innerText = result;
+}
 
-        let computerSelection = computerPlay();
-        let result = playRound(SELECTION[playerSelection], computerSelection);
+function startRound(e) {
+    let playerSelection = e.target.innerText;
+    let computerSelection = computerPlay();
+    let result = playRound(SELECTION[playerSelection.toUpperCase()], SELECTION[computerSelection.toUpperCase()]);
+    
+    updateRoundResult(
+        'Player chooses ' + playerSelection,
+        'Computer chooses ' + computerSelection,
+        result
+    );
+    updateGameResults(result);
+}
 
-        console.log(result);
+function disablePlayButtons(option) {
+    let playBtns = document.querySelectorAll('.play-button');
+    playBtns.forEach((btn) => {
+        btn.disabled = option;
+    });
+}
 
-        if (result === "Draw!") continue;
-        else if (result.substring(4, 7) == "Win") playerScore++;
-        else computerScore++;
+function stopGame(winnerID) {
+    let pageBody = document.querySelector('body');
+    if (winnerID === 'player-score') {
+        pageBody.style.backgroundColor = '#a5ff91';
+    }
+    else if (winnerID === 'computer-score') {
+        pageBody.style.backgroundColor = '#f9c98e';
     }
 
-    (playerScore == 5) ? console.log("Player wins the game!") : console.log("Computer wins the game!")
+    disablePlayButtons(true);
+    
+    let restartBtn = document.createElement('button');
+    restartBtn.innerHTML = 'Play Again';
+    pageBody.appendChild(restartBtn);
+
+    restartBtn.addEventListener('click', (e) => {
+        restartGame(pageBody);
+        pageBody.removeChild(restartBtn);
+    });
 }
+
+function restartGame(pageBody) {
+    playerScore = 0;
+    computerScore = 0;
+    roundCount = 1;
+    updateRoundNumber();
+    updatePlayerScores();
+    pageBody.style.backgroundColor = 'white';
+    updateRoundResult('\xA0', '\xA0', 'Game not started yet');
+    disablePlayButtons(false);
+}
+
+const buttons = Array.from(document.querySelectorAll('.play-button'));
+buttons.forEach((button) => {
+    button.addEventListener('click', startRound);
+})
+
+const scoreKeepers = document.querySelectorAll('.score');
+scoreKeepers.forEach((scoreKeeper) => {
+    let observer = new MutationObserver((mutations) => {
+        mutations.forEach((m) => {
+            if (m.target.textContent == 5) {
+                let winner = m.target.parentElement.id;
+                stopGame(winner);
+            }
+        })
+    });
+    let config = {characterData: true, subtree: true};
+    observer.observe(scoreKeeper, config);
+});
